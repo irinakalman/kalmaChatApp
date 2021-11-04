@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "kalmani"
+  },
+  "targets": {
+    "kalmani": {
+      "hosting": {
+        "kalma": [
+          "kalma-chat"
+        ]
+      }
+    }
+  }
+}

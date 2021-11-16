@@ -3,6 +3,9 @@ import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {FormControl, ValidatorFn} from '@angular/forms';
 import * as uuid from 'uuid';
+import {DataService} from '../services/data.service';
+import {MatDialog} from '@angular/material/dialog';
+import {UsernameDialogComponent} from '../username-dialog/username-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -12,8 +15,12 @@ import * as uuid from 'uuid';
 export class HomeComponent implements OnInit {
   roomControl!: FormControl;
   userTyping = false;
+  loading = false;
 
-  constructor(private router: Router, private snackbar: MatSnackBar) {
+  constructor(private router: Router,
+              private snackbar: MatSnackBar,
+              public dataSrv: DataService,
+              public dialogSrv: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -28,29 +35,47 @@ export class HomeComponent implements OnInit {
   roomValidators(): ValidatorFn {
     return (): { [key: string]: any } | null => {
       if (this.roomControl?.value === '') {
-        return { empty: 'Must not be empty' };
-      }
-      if (this.roomControl?.value === '1') {
-        return { taken: 'This room ID is taken' };
-      }
-      if (this.roomControl?.value.length < 7) {
-        return { minLength: 'This room ID is not long enough' };
-      }
-      if (this.roomControl?.value.length >= 255) {
-        return { maxLength: 'This room ID is too long' };
+        return {empty: 'Must not be empty'};
       }
       return null;
     };
   }
 
-  joinRoom(room: string): Promise<boolean> {
-    if (room) {
-      return this.router.navigate(['/chatRoom/' + room]);
+  async joinRoom(roomID: string): Promise<void> {
+    this.loading = true;
+    const roomExists = await this.dataSrv.checkIfRoomExists(roomID);
+    if (!roomExists) {
+      this.snackbar.open('Room doesn\'t exist!', 'Fine 🙄');
+      this.loading = false;
+      return;
     }
-    this.snackbar.open('Incorrect room ID', 'Fine 🙄');
+    this.openUsernameDialog(roomID);
   }
 
-  generateRandomRoomID(): void {
-    this.roomControl.setValue(String(uuid.v4()).split('-').join('').toUpperCase());
+  generateRandomRoomAndJoin(): void {
+    this.openUsernameDialog();
+  }
+
+  openUsernameDialog(userTypedRoom?: string): void {
+    this.loading = true;
+    const dialogRef = this.dialogSrv.open(UsernameDialogComponent, {width: '250px'});
+    dialogRef.componentInstance.username = this.dataSrv.username;
+    dialogRef.afterClosed().subscribe(username => {
+      console.log('The dialog was closed, result: ', username);
+      this.dataSrv.initialize(username)
+        .then(id => {
+          if (!userTypedRoom) {
+            this.dataSrv.createChatRoom()
+              .then(roomID => this.router.navigate(['/chatRoom/' + roomID]));
+          } else {
+            this.router.navigate(['/chatRoom/' + userTypedRoom]);
+          }
+        })
+        .catch(e => {
+          console.error(e);
+          this.snackbar.open('Something went wrong 😕', 'I understand');
+        })
+        .finally(() => this.loading = false);
+    });
   }
 }

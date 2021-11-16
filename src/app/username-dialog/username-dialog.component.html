@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Username</h1>
+<div mat-dialog-content>
+  <p>Would you like to insert a username?</p>
+  <mat-form-field>
+    <mat-label>Username</mat-label>
+    <input matInput [(ngModel)]="username">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="username">Let's go!</button>
+</div>

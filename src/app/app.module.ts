@@ -1,18 +1,14 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
-import {provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService} from '@angular/fire/analytics';
-import {provideAuth, getAuth} from '@angular/fire/auth';
-import {provideFirestore, getFirestore} from '@angular/fire/firestore';
-import {provideFunctions, getFunctions} from '@angular/fire/functions';
-import {provideStorage, getStorage} from '@angular/fire/storage';
-import { HomeComponent } from './home/home.component';
-import { ChatroomComponent } from './chatroom/chatroom.component';
-import { LoginComponent } from './login/login.component';
+import {ScreenTrackingService, UserTrackingService} from '@angular/fire/analytics';
+import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {HomeComponent} from './home/home.component';
+import {ChatroomComponent} from './chatroom/chatroom.component';
+import {LoginComponent} from './login/login.component';
 import {RouterModule} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -21,25 +17,33 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatRippleModule} from '@angular/material/core';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { UsernameDialogComponent } from './username-dialog/username-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { ExitRoomDialogComponent } from './exit-room-dialog/exit-room-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ChatroomComponent,
-    LoginComponent
+    LoginComponent,
+    UsernameDialogComponent,
+    ExitRoomDialogComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAnalytics(() => getAnalytics()),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions()),
-    provideStorage(() => getStorage()),
+    provideFirestore(() => {
+      const db = getFirestore();
+      connectFirestoreEmulator(db, 'localhost', 8080);
+      return db;
+    }),
     RouterModule,
     MatToolbarModule,
     MatIconModule,
@@ -47,11 +51,16 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    MatDividerModule,
+    MatRippleModule,
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   providers: [
     ScreenTrackingService,
-    UserTrackingService
+    UserTrackingService,
   ],
   bootstrap: [AppComponent]
 })

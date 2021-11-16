@@ -6,3 +6,24 @@ html, body {
 body {
   margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Pulse Animation */
+@keyframes pulse {
+  0% {
+    background-color: #dadada;
+  }
+
+  100% {
+    background-color: #a7a7a7;
+  }
+}
+
+.placeholder {
+  color: transparent;
+  user-select: none;
+  animation: pulse 0.78s ease-in-out alternate infinite forwards;
+  &.matSelectHeight {
+    height: 35px;
+  }
+}
+/* ./Pulse Animation */

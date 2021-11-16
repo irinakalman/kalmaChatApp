@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Exit chat room</h1>
+<div mat-dialog-content>
+  <p>Are you sure you want to exit this chat room?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close>Stay</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">Leave</button>
+</div>

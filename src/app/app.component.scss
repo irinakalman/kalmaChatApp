@@ -1,0 +1,195 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+
+mat-toolbar {
+  background: transparent !important;
+  height: 56px;
+
+  .logoButton {
+    background: transparent;
+    opacity: 1;
+    color: white;
+    font-size: 1.2rem;
+
+    &:hover {
+      background: #8f94fb;
+    }
+  }
+
+  .loginButton {
+    background: transparent;
+    margin-left: 1rem;
+
+    &:hover {
+      background: #8f94fb;
+    }
+  }
+}
+
+
+footer {
+  color: white;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: transparent;
+  font-size: 1.2em;
+  font-weight: 300;
+  font-family: system-ui;
+  padding: 0.5rem 0;
+  z-index: -1;
+
+  p {
+    margin: 0;
+  }
+}
+
+.area {
+  position: fixed;
+  top: 0;
+  z-index: -1;
+  background: #4e54c8;
+  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  &.inactive {
+    li {
+      animation: animate linear;
+    }
+  }
+}
+
+.circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+
+  li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+
+    $c1: 80px;
+    &:nth-child(1) {
+      left: calc(25% - #{$c1});
+      width: $c1;
+      height: $c1;
+      animation-delay: 0s;
+    }
+
+    $c2: 20px;
+    &:nth-child(2) {
+      left: calc(10% - #{$c2});
+      width: $c2;
+      height: $c2;
+      animation-delay: 2s;
+      animation-duration: 12s;
+    }
+
+    $c3: 20px;
+    &:nth-child(3) {
+      left: calc(70% - #{$c3});
+      width: $c3;
+      height: $c3;
+      animation-delay: 4s;
+    }
+
+    $c4: 60px;
+    &:nth-child(4) {
+      left: calc(40% - #{$c4});
+      width: $c4;
+      height: $c4;
+      animation-delay: 0s;
+      animation-duration: 18s;
+    }
+
+    $c5: 20px;
+    &:nth-child(5) {
+      left: calc(65% - #{$c5});
+      width: $c5;
+      height: $c5;
+      animation-delay: 0s;
+    }
+
+    $c6: 110px;
+    &:nth-child(6) {
+      left: calc(95% - #{$c6});
+      width: $c6;
+      height: $c6;
+      animation-delay: 3s;
+    }
+
+    $c7: 150px;
+    &:nth-child(7) {
+      left: calc(35% - #{$c7});
+      width: $c7;
+      height: $c7;
+      animation-delay: 7s;
+    }
+
+    $c8: 25px;
+    &:nth-child(8) {
+      left: calc(50% - #{$c8});
+      width: $c8;
+      height: $c8;
+      animation-delay: 15s;
+      animation-duration: 45s;
+    }
+
+    $c9: 15px;
+    &:nth-child(9) {
+      left: calc(20% - #{$c9});
+      width: $c9;
+      height: $c9;
+      animation-delay: 2s;
+      animation-duration: 35s;
+    }
+
+    $c10: 150px;
+    &:nth-child(10) {
+      left: calc(85% - #{$c10});
+      width: $c10;
+      height: $c10;
+      animation-delay: 0s;
+      animation-duration: 19s;
+    }
+
+    $c11: 78px;
+    &:nth-child(11) {
+      left: calc(100% - #{$c11});
+      width: $c11;
+      height: $c11;
+      animation-delay: 4s;
+      animation-duration: 22s;
+    }
+  }
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
+}

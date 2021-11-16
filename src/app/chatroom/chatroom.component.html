@@ -1,3 +1,57 @@
-<div class="container">
-  my room here
+<div class="cardContainer">
+  <div class="card" *ngIf="chatRoom && chatRoom.participants?.length !== 0">
+    <div class="header">
+      <h2>
+        <ng-container *ngFor="let participant of chatRoom?.participants; let idx = index">
+          <span [class.offline]="participant.status === 'offline'">{{participant.username}}</span>
+          {{idx !== chatRoom?.participants.length - 1 ? ',' : ''}}
+        </ng-container>
+      </h2>
+      <p>{{chatRoom?.created | date}}</p>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <ng-container *ngFor="let message of chatRoom?.lastMessages; let idx = index">
+        <p class="timestamp"
+           [class.me]="message.participantID === dataSrv.participantID"
+           [class.them]="message.participantID !== dataSrv.participantID"
+           *ngIf="selectedMessage === message">
+          {{message.sent | date: 'MMM d, HH:mm'}}
+        </p>
+        <div class="message"
+             (click)="showTimestampForMessage(message)"
+             [class.noMarginBottom]="selectedMessage === message"
+             [class.me]="message.participantID === dataSrv.participantID"
+             [class.them]="message.participantID !== dataSrv.participantID">
+          {{message.message}}
+        </div>
+        <p class="username"
+           *ngIf="shouldShowUsername(message, idx)"
+           [class.me]="message.participantID === dataSrv.participantID"
+           [class.them]="message.participantID !== dataSrv.participantID">
+          {{message.participantUsername
+          ? message.participantID === dataSrv.participantID ? 'me' : message.participantUsername
+          : '_'}}
+        </p>
+      </ng-container>
+<!--      <div class="date">TUE AT 23:41</div>-->
+    </div>
+    <div class="footer">
+      <input class="chatInput" [(ngModel)]="cInput" placeholder="Aa" (keyup.enter)="sendMessage()">
+      <button mat-icon-button
+              matRipple
+              [matRippleCentered]="true"
+              [matRippleRadius]="20"
+              [matRippleColor]="'white'"
+              color="primary"
+              [class.disabled]="!cInput"
+              [disabled]="!cInput"
+              (click)="sendMessage()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="card fixedHeight" *ngIf="!chatRoom || chatRoom.participants?.length === 0">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
 </div>

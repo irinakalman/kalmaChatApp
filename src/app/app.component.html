@@ -1,1 +1,31 @@
+<mat-toolbar color="primary">
+  <button mat-flat-button class="logoButton" (click)="goOfflineAtChatRoom()">KalmaChat 👀</button>
+  <span class="example-spacer"></span>
+  <button *ngIf="userJoinedRoom" mat-icon-button (click)="exitRoomDialog()">
+    <mat-icon>logout</mat-icon>
+  </button>
+  <button mat-flat-button color="primary" class="loginButton">Login</button>
+</mat-toolbar>
+
 <router-outlet></router-outlet>
+
+<div class="area" [class.inactive]="userJoinedRoom">
+  <ul class="circles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>
+
+<footer class="mat-grid-tile-footer">
+  <div class="container">
+    <p>Made with ❤</p>
+  </div>
+</footer>

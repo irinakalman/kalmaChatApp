@@ -1,0 +1,157 @@
+
+.cardContainer {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-flow: column wrap;
+  width: 25rem;
+  max-width: 100%;
+  padding-bottom: 4rem;
+
+  .card {
+    max-width: 30rem;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    background: white;
+    overflow: hidden;
+    min-height: calc(56px + 5rem + 56px);
+    max-height: calc(100vh - 56px - 4rem);
+
+    &.fixedHeight {
+      min-height: calc(48px + 56px + 17rem);
+    }
+
+    mat-divider {
+      width: 100%;
+    }
+
+    .header {
+      padding: 0.25rem;
+
+      h2 {
+        margin: 0;
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.5rem;
+
+        .offline {
+          color: lightgrey;
+        }
+      }
+
+      p {
+        color: lightgrey;
+        font-weight: 100;
+        font-size: 0.78rem;
+        font-family: monospace;
+        text-align: center;
+        margin: 0;
+        line-height: 0.9rem;
+      }
+    }
+
+    .content {
+      width: 100%;
+      max-width: 100vw;
+      min-height: 5rem;
+      /* 64: toolbar, 36: footer, 28: card header, 40: card footer, mat-dividers x2, padding 0.25rem x2 */
+      //max-height: calc(100vh - 56px - 36px - 24px - 40px - 1px);
+      box-sizing: border-box;
+      padding: 0.25rem 0.5rem 0;
+      display: flex;
+      flex-flow: column;
+      //justify-content: flex-end; // bugged, don't use - https://stackoverflow.com/questions/36130760/use-justify-content-flex-end-and-to-have-vertical-scrollbar
+      overflow-y: auto;
+      flex-direction: column-reverse;
+
+      :last-child {
+        margin-top: auto;
+      }
+
+      .date {
+        text-align: center;
+        color: gray;
+      }
+
+      .timestamp {
+        margin: 0;
+        font-size: 0.6rem;
+        color: gray;
+      }
+
+      .message {
+        margin-bottom: 0.5rem;color: white;
+        max-width: 80%;
+        padding: 0.3rem;
+        border-radius: 10px;
+        overflow-wrap: break-word;
+
+        &.them {
+          background: #4e4e56;
+        }
+
+        &.me {
+          background: #4e54c8;
+        }
+
+        &.noMarginBottom {
+          margin-bottom: 0;
+        }
+      }
+
+      .username {
+        color: lightgrey;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+
+      .them {
+        margin-right: auto;
+      }
+
+      .me {
+        margin-left: auto;
+      }
+
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      background: #39385e;
+
+      .chatInput {
+        height: 14px;
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem;
+        width: calc(100% - 60px);
+        caret-color: #4e54c8;
+        outline: none;
+      }
+
+      button {
+
+        &.disabled {
+
+          mat-icon {
+            color: lightgrey !important;
+          }
+        }
+      }
+
+      mat-icon {
+        overflow: hidden;
+        box-sizing: border-box;
+        color: #b8b8ff;
+      }
+    }
+  }
+}

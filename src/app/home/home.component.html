@@ -1,10 +1,3 @@
-<mat-toolbar color="primary">
-  <span>KalmaChat 👀</span>
-  <span class="example-spacer"></span>
-  <mat-icon aria-hidden="false" aria-label="Example home icon">home</mat-icon>
-  <button mat-flat-button color="primary" class="loginButton">Login</button>
-</mat-toolbar>
-
 <div class="cardContainer">
   <div class="container-image">
     <img src="assets/img/109a0cb9c3b1532699f6a591c6476474.png" alt="People interacting">
@@ -15,41 +8,15 @@
     <mat-form-field>
       <mat-label>Room id</mat-label>
       <input [formControl]="roomControl" (change)="startedTyping()" #roomInput matInput>
-      <mat-hint *ngIf="userTyping">Tip: The longer the room ID, the better</mat-hint>
+      <mat-hint>Tip: paste the link or room ID here</mat-hint>
       <mat-error *ngIf="roomControl.hasError('empty')">{{roomControl.getError('empty')}}</mat-error>
-      <mat-error *ngIf="roomControl.hasError('taken')">{{roomControl.getError('taken')}}</mat-error>
-      <mat-error *ngIf="roomControl.hasError('minLength')">{{roomControl.getError('minLength')}}</mat-error>
-      <mat-error *ngIf="roomControl.hasError('maxLength')">{{roomControl.getError('maxLength')}}</mat-error>
     </mat-form-field>
     <div class="buttons">
-      <button (click)="joinRoom(roomInput.value)" mat-raised-button color="primary">
-        Join
-      </button>
-      <button (click)="generateRandomRoomID()" mat-raised-button>
-        Random
-      </button>
+      <button (click)="joinRoom(roomInput.value)" mat-raised-button color="primary">Join</button>
+      <button (click)="generateRandomRoomAndJoin()" mat-raised-button>Random</button>
+    </div>
+    <div *ngIf="loading" class="loading">
+      <mat-spinner [diameter]="50"></mat-spinner>
     </div>
   </div>
 </div>
-
-<div class="area">
-  <ul class="circles">
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-  </ul>
-</div>
-
-
-<footer class="mat-grid-tile-footer">
-  <div class="container">
-    <p>Made with ❤</p>
-  </div>
-</footer>

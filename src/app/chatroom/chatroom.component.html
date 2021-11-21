@@ -1,22 +1,33 @@
+<mat-toolbar color="primary">
+  <button mat-flat-button class="toolbarBtn logo" (click)="goOfflineAtChatRoom()">KalmaChat 👀</button>
+  <span class="example-spacer"></span>
+  <!-- show this button only if user has joined a room -->
+  <button class="toolbarBtn" *ngIf="chatRoom" mat-icon-button (click)="exitRoomDialog()">
+    <mat-icon>logout</mat-icon>
+  </button>
+  <button mat-flat-button class="toolbarBtn login">Login</button>
+</mat-toolbar>
 <div class="cardContainer">
   <div class="card" *ngIf="chatRoom && chatRoom.participants?.length !== 0">
     <div class="header">
       <h2>
-        <ng-container *ngFor="let participant of chatRoom?.participants; let idx = index">
+        <ng-container *ngFor="let participant of participantsArray(chatRoom); let idx = index">
           <span [class.offline]="participant.status === 'offline'">{{participant.username}}</span>
-          {{idx !== chatRoom?.participants.length - 1 ? ',' : ''}}
+          {{idx !== participantsArray(chatRoom)?.length - 1 ? ',' : ''}}
         </ng-container>
       </h2>
       <p>{{chatRoom?.created | date}}</p>
     </div>
     <mat-divider></mat-divider>
-    <div class="content">
-      <ng-container *ngFor="let message of chatRoom?.lastMessages; let idx = index">
-        <p class="timestamp"
+    <div id="contentElement" class="content">
+      <ng-container *ngFor="let message of sortedMessagesArray(chatRoom); let idx = index">
+        <p class="username"
+           *ngIf="shouldShowUsername(message, idx)"
            [class.me]="message.participantID === dataSrv.participantID"
-           [class.them]="message.participantID !== dataSrv.participantID"
-           *ngIf="selectedMessage === message">
-          {{message.sent | date: 'MMM d, HH:mm'}}
+           [class.them]="message.participantID !== dataSrv.participantID">
+          {{message.participantUsername
+          ? message.participantID === dataSrv.participantID ? 'me' : message.participantUsername
+          : '_'}}
         </p>
         <div class="message"
              (click)="showTimestampForMessage(message)"
@@ -25,13 +36,11 @@
              [class.them]="message.participantID !== dataSrv.participantID">
           {{message.message}}
         </div>
-        <p class="username"
-           *ngIf="shouldShowUsername(message, idx)"
+        <p class="timestamp"
            [class.me]="message.participantID === dataSrv.participantID"
-           [class.them]="message.participantID !== dataSrv.participantID">
-          {{message.participantUsername
-          ? message.participantID === dataSrv.participantID ? 'me' : message.participantUsername
-          : '_'}}
+           [class.them]="message.participantID !== dataSrv.participantID"
+           *ngIf="selectedMessage === message">
+          {{message.sent | date: 'MMM d, HH:mm'}}
         </p>
       </ng-container>
 <!--      <div class="date">TUE AT 23:41</div>-->
@@ -55,3 +64,4 @@
     <mat-spinner [diameter]="50"></mat-spinner>
   </div>
 </div>
+<div class="area"></div>

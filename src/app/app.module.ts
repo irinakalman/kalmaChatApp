@@ -41,6 +41,7 @@ import { ExitRoomDialogComponent } from './exit-room-dialog/exit-room-dialog.com
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => {
       const db = getFirestore();
+      if (environment.production) { return db; }
       connectFirestoreEmulator(db, 'localhost', 8080);
       return db;
     }),

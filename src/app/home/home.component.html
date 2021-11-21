@@ -1,3 +1,9 @@
+<mat-toolbar color="primary">
+  <button mat-flat-button class="toolbarBtn logo">KalmaChat 👀</button>
+  <span class="example-spacer"></span>
+  <button mat-flat-button class="toolbarBtn login">Login</button>
+</mat-toolbar>
+
 <div class="cardContainer">
   <div class="container-image">
     <img src="assets/img/109a0cb9c3b1532699f6a591c6476474.png" alt="People interacting">
@@ -7,16 +13,42 @@
     <p>Angular, Firebase, SCSS were used</p>
     <mat-form-field>
       <mat-label>Room id</mat-label>
+      <!-- We define the controller of this input (controller is named roomControl) -->
+      <!-- (change) is calling function "startedTyping()" whenever user starts changing/typing on input field -->
+      <!-- #roomInput id is used through Angular to get element quickly -->
+      <!-- mat-form-field and matInput is for styling -->
       <input [formControl]="roomControl" (change)="startedTyping()" #roomInput matInput>
+      <!-- If there's no mat-error, then mat-hint will be shown by default, no ngIf required because of smart CSS -->
       <mat-hint>Tip: paste the link or room ID here</mat-hint>
+      <!-- If room input has error "empty" from its validators, then get error message for "empty" case and show it -->
       <mat-error *ngIf="roomControl.hasError('empty')">{{roomControl.getError('empty')}}</mat-error>
     </mat-form-field>
     <div class="buttons">
+      <!-- We get roomInput's value from #roomInput -->
+      <!-- color="primary/accent/warn" may be used to style buttons -->
+      <!-- mat-flat-button / mat-raised-button etc. can be used to style buttons -->
       <button (click)="joinRoom(roomInput.value)" mat-raised-button color="primary">Join</button>
-      <button (click)="generateRandomRoomAndJoin()" mat-raised-button>Random</button>
+      <button (click)="openUsernameDialog()" mat-raised-button>Random</button>
     </div>
+    <!-- If we're waiting for server to initialize our chat room, we show this mat-spinner -->
     <div *ngIf="loading" class="loading">
       <mat-spinner [diameter]="50"></mat-spinner>
     </div>
   </div>
+</div>
+
+<!-- Background animations here -->
+<div class="area">
+  <ul class="circles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
 </div>

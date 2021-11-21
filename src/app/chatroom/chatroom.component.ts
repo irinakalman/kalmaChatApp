@@ -7,6 +7,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MessageRecord} from '../dtos/MessageRecord';
 import * as uuid from 'uuid';
+import {ParticipantRecord} from '../dtos/ParticipantRecord';
+import {ExitRoomDialogComponent} from '../exit-room-dialog/exit-room-dialog.component';
 
 @Component({
   selector: 'app-chatroom',
@@ -58,11 +60,9 @@ export class ChatroomComponent implements OnInit {
   initChatRoom(username: string, roomID: string): void {
     this.dataSrv.initialize(username)
       .then(id => {
-        this.dataSrv.currentRoomID.next(roomID);
         this.dataSrv.getChatRoomByID(roomID).subscribe(res => this.handleRoomData(res));
       })
       .catch(e => {
-        this.dataSrv.currentRoomID.next(null);
         console.error(e);
         this.snackbar.open('Something went wrong 😕', 'I understand');
       })
@@ -81,18 +81,22 @@ export class ChatroomComponent implements OnInit {
   handleRoomData(chatRoomData: ChatRoomRecord): void {
     this.chatRoom = chatRoomData;
     console.log('Chat room data:', chatRoomData);
-    console.log('current user ID:', this.dataSrv.participantID);
-    console.log('dataSrv participant:', this.dataSrv.participant);
     this.updateParticipantStatus();
+
+    // We scroll to bottom  whenever we receive or send a message.
+    setTimeout(() => {
+      const el = document.getElementById('contentElement');
+      if (!el) { return; }
+      el.scrollTop = el.scrollHeight;
+    }, 1);
   }
 
   updateParticipantStatus(): void {
-    if (!this.dataSrv.currentRoomID.value) { return; }
+    if (!this.chatRoom) { return; }
     let shouldUpdate = false;
-    const findMe = this.chatRoom.participants.find(p => p.id === this.dataSrv.participantID);
-    console.log(findMe);
+    const findMe = this.chatRoom.participants[this.dataSrv.participantID];
     if (!findMe) {
-      this.chatRoom.participants.push(this.dataSrv.participant);
+      this.chatRoom.participants[this.dataSrv.participantID] = this.dataSrv.participant;
       shouldUpdate = true;
     } else if (findMe && findMe.username !== this.dataSrv.username) {
       findMe.username = this.dataSrv.username;
@@ -111,36 +115,75 @@ export class ChatroomComponent implements OnInit {
     if (this.cInput === '') { return; }
     const tempInput = this.cInput;
     this.cInput = '';
+    const newId = uuid.v4();
     const newMessage = new MessageRecord({
-      id: uuid.v4(),
+      id: newId,
       message: tempInput,
       participantID: this.dataSrv.participantID,
       participantUsername: this.dataSrv.username,
     });
     newMessage.sent = new Date();
-    if (this.chatRoom?.lastMessages?.length >= 20) {
-      this.chatRoom.lastMessages?.pop(); // last 20 messages only
+    const sortedArray = this.sortedMessagesArray(this.chatRoom);
+    if (sortedArray?.length >= 20) {
+      const valueToRemove = sortedArray[0];
+      delete this.chatRoom.lastMessages[valueToRemove.id]; // last 20 messages only
       // this.chatRoom.lastMessages = [];
     }
-    this.chatRoom.lastMessages.push(newMessage);
+    this.chatRoom.lastMessages[newId] = newMessage;
     this.dataSrv.updateChatRoom(this.chatRoom)
       .then(() => console.log('sent'))
       .catch(e => {
         console.error(e);
         this.snackbar.open('Something went wrong 😕', 'I understand');
         this.cInput = tempInput;
-        this.chatRoom.lastMessages.splice(this.chatRoom.lastMessages.indexOf(newMessage), 1);
+        delete this.chatRoom.lastMessages[newId];
+      });
+  }
+
+  exitRoomDialog(): void {
+    if (!this.chatRoom) {
+      return; // TODO: snackbar error
+    }
+    const dialogRef = this.dialogSrv.open(ExitRoomDialogComponent, {width: '250px'});
+    dialogRef.afterClosed().subscribe((userWillLeave: boolean) => {
+      console.log('User will leave: ', userWillLeave);
+      if (!userWillLeave) { return; }
+      delete this.chatRoom.participants[this.dataSrv.participantID];
+      this.dataSrv.updateChatRoom(this.chatRoom)
+        .then(() => this.router.navigate(['/home']))
+        .catch(e => {
+          console.error(e);
+        });
+    });
+  }
+
+  goOfflineAtChatRoom(): void {
+    if (!this.chatRoom) { return; }
+    this.chatRoom.participants[this.dataSrv.participantID].status = 'offline';
+    this.dataSrv.updateChatRoom(this.chatRoom)
+      .then(() => this.router.navigate(['/home']))
+      .catch(e => {
+        console.error(e);
       });
   }
 
   shouldShowUsername(message: MessageRecord, idx: number): boolean {
-    if (idx === this.chatRoom.lastMessages.length - 1) {
+    if (idx === 0) {
       return true;
     }
-    return this.chatRoom.lastMessages[idx + 1]?.participantID !== message.participantID;
+    return this.sortedMessagesArray(this.chatRoom)[idx - 1]?.participantID !== message.participantID;
   }
 
   showTimestampForMessage(message: MessageRecord): void {
     this.selectedMessage = this.selectedMessage === message ? null : message;
+  }
+
+  participantsArray(chatRoom: ChatRoomRecord): ParticipantRecord[] {
+    return Object.values(chatRoom.participants || {});
+  }
+
+  sortedMessagesArray(chatRoom: ChatRoomRecord): MessageRecord[] {
+    return Object.values(chatRoom.lastMessages || {})
+      .sort((a, b) => a.sent.getTime() - b.sent.getTime());
   }
 }

@@ -12,22 +12,11 @@
   },
   "hosting": [
     {
-      "public": "public",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
+      "public": "public"
     },
     {
       "target": "kalma",
-      "public": "dist/kalma",
+      "public": "./dist/kalma",
       "ignore": [
         "**/.*"
       ],

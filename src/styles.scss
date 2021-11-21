@@ -1,10 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 html, body {
   height: 100%;
 }
 body {
   margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+
+mat-toolbar {
+  background: transparent !important;
+  height: 56px !important;
+
+  .toolbarBtn {
+    background: transparent;
+    opacity: 1;
+    color: white;
+
+    &:hover {
+      background: #8f94fb;
+    }
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .login {
+    font-size: 1rem;
+  }
 }
 
 /* Pulse Animation */

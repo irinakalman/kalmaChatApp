@@ -1,28 +1,8 @@
-<mat-toolbar color="primary">
-  <button mat-flat-button class="logoButton" (click)="goOfflineAtChatRoom()">KalmaChat 👀</button>
-  <span class="example-spacer"></span>
-  <button *ngIf="userJoinedRoom" mat-icon-button (click)="exitRoomDialog()">
-    <mat-icon>logout</mat-icon>
-  </button>
-  <button mat-flat-button color="primary" class="loginButton">Login</button>
-</mat-toolbar>
-
+<!-- Router outlet is showing the contents of whatever component is selected through routes -->
+<!-- e.g. /chatRoom will show contents of chatroom.component.html as app-chatroom -->
+<!-- e.g. /home will show contents of home.component.html as app-home -->
+<!-- the rest of the HTML stays untouched (e.g. mat-toolbar, .area, footer) -->
 <router-outlet></router-outlet>
-
-<div class="area" [class.inactive]="userJoinedRoom">
-  <ul class="circles">
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-  </ul>
-</div>
 
 <footer class="mat-grid-tile-footer">
   <div class="container">

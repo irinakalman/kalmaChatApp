@@ -8,6 +8,7 @@
     "start:dev": "ng serve --host 0.0.0.0 --disable-host-check",
     "start:emulators": "npm run build --prefix ./functions && cross-env FIRESTORE_EMULATOR_HOST=\"localhost:8080\" FIREBASE_STORAGE_EMULATOR_HOST=\"localhost:9199\" FIREBASE_AUTH_EMULATOR_HOST=\"localhost:9099\" && firebase emulators:start --import=./localDB --export-on-exit",
     "build": "ng build",
+    "deploy:hosting": "ng build --configuration production && firebase deploy --only hosting:kalma",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

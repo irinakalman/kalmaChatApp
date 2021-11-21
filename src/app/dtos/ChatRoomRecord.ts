@@ -2,39 +2,50 @@ import {ParticipantRecord} from './ParticipantRecord';
 import {MessageRecord} from './MessageRecord';
 import {DocumentReference, Timestamp} from '@angular/fire/firestore';
 import {ChatRoomModel} from './models/ChatRoomModel';
-import {ParticipantModel} from './models/ParticipantModel';
+
+// [key: string]: MessageRecord means that we can have any key as a string that will give us a MessageRecord as a value.
+// In our case, it's just a random id as key e.g. "ajhj48an210": {MessageRecord object/class here}
+export type MessageRecordMap = {
+  [key: string]: MessageRecord;
+};
+
+export type ParticipantRecordMap = {
+  [key: string]: ParticipantRecord;
+};
 
 export class ChatRoomRecord {
   id: string;
   docRef: DocumentReference;
   created: Date;
   participantLimit: number;
-  participants?: ParticipantRecord[];
-  lastMessages?: MessageRecord[];
+  participants?: ParticipantRecordMap;
+  lastMessages?: MessageRecordMap;
 
   constructor(data?: { id?: string, docRef?: DocumentReference } & ChatRoomModel) {
     this.id = data.id;
     this.docRef = data.docRef;
     this.created = data.created.toDate();
     this.participantLimit = data.participantLimit;
-    this.lastMessages = data.lastMessages
-      ?.map(m => new MessageRecord(m))
-      ?.sort((a, b) => b.sent.getTime() - a.sent.getTime()) || [];
-    this.participants = data.participants?.map(p => new ParticipantRecord(p)) || [];
-    console.log(this.participants);
+    this.participants = {};
+    this.lastMessages = {};
+    Object.keys(data.lastMessages || [])
+      ?.forEach(id => this.lastMessages[id] = new MessageRecord(data.lastMessages[id]));
+      // ?.sort((a, b) => b.sent.getTime() - a.sent.getTime());
+    Object.keys(data.participants || [])
+      ?.forEach(id => this.participants[id] = new ParticipantRecord(data.participants[id]));
     // we can't get participants and last messages from model, because we don't have ID yet here.
   }
 
   toModel(): ChatRoomModel {
+    const participantMap = {};
+    const lastMessagesMap = {};
+    Object.keys(this.lastMessages).forEach(id => lastMessagesMap[id] = this.lastMessages[id].toModel());
+    Object.keys(this.participants).forEach(id => participantMap[id] = this.participants[id].toModel());
     return {
       created: Timestamp.fromDate(this.created),
       participantLimit: this.participantLimit,
-      participants: this.participants?.map(participant => {
-        const p = participant.toModel() as ParticipantModel & {id: string};
-        p.id = participant.id;
-        return p;
-      }) || [],
-      lastMessages: this.lastMessages?.map(message => message.toModel()) || []
+      participants: participantMap,
+      lastMessages: lastMessagesMap
     };
   }
 }

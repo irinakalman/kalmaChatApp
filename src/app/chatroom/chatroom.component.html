@@ -7,6 +7,7 @@
   </button>
   <button mat-flat-button class="toolbarBtn login">Login</button>
 </mat-toolbar>
+
 <div class="cardContainer">
   <div class="card" *ngIf="chatRoom && chatRoom.participants?.length !== 0">
     <div class="header">
@@ -46,15 +47,15 @@
 <!--      <div class="date">TUE AT 23:41</div>-->
     </div>
     <div class="footer">
-      <input class="chatInput" [(ngModel)]="cInput" placeholder="Aa" (keyup.enter)="sendMessage()">
+      <input class="chatInput" [(ngModel)]="chatInputValue" placeholder="Aa" (keyup.enter)="sendMessage()">
       <button mat-icon-button
               matRipple
               [matRippleCentered]="true"
               [matRippleRadius]="20"
               [matRippleColor]="'white'"
               color="primary"
-              [class.disabled]="!cInput"
-              [disabled]="!cInput"
+              [class.disabled]="!chatInputValue"
+              [disabled]="!chatInputValue"
               (click)="sendMessage()">
         <mat-icon>send</mat-icon>
       </button>

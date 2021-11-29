@@ -111,6 +111,6 @@ export class HomeComponent implements OnInit {
   showErrorSnackbar(e: any): void {
     console.error(e);
     this.loading = false;
-    this.snackbar.open('Something went wrong 😕', 'I understand');
+    this.snackbar.open('Something went wrong 😕', 'Pff okay');
   }
 }

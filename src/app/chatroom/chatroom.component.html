@@ -1,27 +1,45 @@
+<!-- Our toolbar at the top, with a logo / text that is also a button -->
 <mat-toolbar color="primary">
+  <!-- Clicking this button makes the user go offline -->
   <button mat-flat-button class="toolbarBtn logo" (click)="goOfflineAtChatRoom()">KalmaChat 👀</button>
   <span class="example-spacer"></span>
-  <!-- show this button only if user has joined a room -->
+  <!-- Show this button only if user has joined a room. Clicking this button exits the room (after dialog closes) -->
   <button class="toolbarBtn" *ngIf="chatRoom" mat-icon-button (click)="exitRoomDialog()">
     <mat-icon>logout</mat-icon>
   </button>
+  <!-- TODO: when we have login, we will implement this button -->
   <button mat-flat-button class="toolbarBtn login">Login</button>
 </mat-toolbar>
 
+<!-- A container for our card / chatbox -->
 <div class="cardContainer">
+  <!-- Show this card if there's a chatroom and the participants are not zero -->
   <div class="card" *ngIf="chatRoom && chatRoom.participants?.length !== 0">
+    <!-- Header of our card to show participant usernames + their status -->
     <div class="header">
       <h2>
+        <!-- Loop through participant array (function because we have object of participants, not array) -->
         <ng-container *ngFor="let participant of participantsArray(chatRoom); let idx = index">
+          <!-- If participant's status is offline, we add class "offline" to this span -->
           <span [class.offline]="participant.status === 'offline'">{{participant.username}}</span>
+          <!-- If index of this loop of participants is not the last one, we put a comma. If it's last, we don't. -->
           {{idx !== participantsArray(chatRoom)?.length - 1 ? ',' : ''}}
         </ng-container>
       </h2>
       <p>{{chatRoom?.created | date}}</p>
     </div>
+    <!-- A straight line to divide header from content div -->
     <mat-divider></mat-divider>
+    <!-- This is where our chat messages appear -->
     <div id="contentElement" class="content">
+      <!-- ng-container is an invisible element that only exists in angular. Content just appears as multiples -->
+      <!-- We loop through our sorted messages array of this chatroom (idx = index to get the index of particular message in this array -->
+      <!-- TODO: was ng-container here - delete line 35 -->
       <ng-container *ngFor="let message of sortedMessagesArray(chatRoom); let idx = index">
+        <!-- We check our function on whether we should show username <p> or not -->
+        <!-- If message participant ID is same as data service participant id, we put class "me" -->
+        <!-- Otherwise we put class "them" -->
+        <!-- If it's us, we put "me" as username text, otherwise we show other user's username -->
         <p class="username"
            *ngIf="shouldShowUsername(message, idx)"
            [class.me]="message.participantID === dataSrv.participantID"
@@ -30,6 +48,9 @@
           ? message.participantID === dataSrv.participantID ? 'me' : message.participantUsername
           : '_'}}
         </p>
+        <!-- Div for message. If user clicks this div, then we mark this message as selected message so sent timestamp appears -->
+        <!-- If this message is the selected message (in loop - line 38), we remove margin bottom (through a css class) -->
+        <!-- Class "me" or "them" applies here too based on which participant sent message -->
         <div class="message"
              (click)="showTimestampForMessage(message)"
              [class.noMarginBottom]="selectedMessage === message"
@@ -37,6 +58,7 @@
              [class.them]="message.participantID !== dataSrv.participantID">
           {{message.message}}
         </div>
+        <!-- If the selected message is this message (in loop - line 38), we show timestamp with specific format (through date pipe | ) -->
         <p class="timestamp"
            [class.me]="message.participantID === dataSrv.participantID"
            [class.them]="message.participantID !== dataSrv.participantID"
@@ -46,8 +68,14 @@
       </ng-container>
 <!--      <div class="date">TUE AT 23:41</div>-->
     </div>
+    <!-- The footer is where our input field is -->
     <div class="footer">
+      <!-- [(ngModel)] is a two-way binding of a variable. When a user types here, they update the "chatInputValue" variable -->
+      <!-- If there "chatInputValue" variable is updated from typescript, then it's also updated on this input element automatically -->
+      <!-- on "enter" key up, we call function "sendMessage()" -->
       <input class="chatInput" [(ngModel)]="chatInputValue" placeholder="Aa" (keyup.enter)="sendMessage()">
+      <!-- Send message button, has some material themed ripple effects when clicked, color primary is our theme's primary color -->
+      <!-- If there's no data in "chatInputValue" variable, then this button is disabled -->
       <button mat-icon-button
               matRipple
               [matRippleCentered]="true"
@@ -61,8 +89,10 @@
       </button>
     </div>
   </div>
+  <!-- Show this spinner if there's no chatroom or there is and the participants are zero -->
   <div class="card fixedHeight" *ngIf="!chatRoom || chatRoom.participants?.length === 0">
     <mat-spinner [diameter]="50"></mat-spinner>
   </div>
 </div>
+<!-- Absolute position purple/blue background -->
 <div class="area"></div>

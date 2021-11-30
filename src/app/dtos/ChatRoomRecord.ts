@@ -1,6 +1,6 @@
 import {ParticipantRecord} from './ParticipantRecord';
 import {MessageRecord} from './MessageRecord';
-import {DocumentReference, Timestamp} from '@angular/fire/firestore';
+import {DocumentReference, Timestamp, serverTimestamp} from '@angular/fire/firestore';
 import {ChatRoomModel} from './models/ChatRoomModel';
 
 // [key: string]: MessageRecord means that we can have any key as a string that will give us a MessageRecord as a value.
@@ -24,7 +24,7 @@ export class ChatRoomRecord {
   constructor(data?: { id?: string, docRef?: DocumentReference } & ChatRoomModel) {
     this.id = data.id;
     this.docRef = data.docRef;
-    this.created = data.created.toDate();
+    this.created = (data.created as Timestamp)?.toDate();
     this.participantLimit = data.participantLimit;
     this.participants = {};
     this.lastMessages = {};
@@ -42,7 +42,8 @@ export class ChatRoomRecord {
     Object.keys(this.lastMessages).forEach(id => lastMessagesMap[id] = this.lastMessages[id].toModel());
     Object.keys(this.participants).forEach(id => participantMap[id] = this.participants[id].toModel());
     return {
-      created: Timestamp.fromDate(this.created),
+      // If there's already a created date, we use that instead of getting server timestamp.
+      created: this.created ? Timestamp.fromDate(this.created) : serverTimestamp(),
       participantLimit: this.participantLimit,
       participants: participantMap,
       lastMessages: lastMessagesMap

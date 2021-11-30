@@ -1,5 +1,5 @@
 import {MessageModel} from './models/MessageModel';
-import {Timestamp} from '@angular/fire/firestore';
+import {Timestamp, serverTimestamp} from '@angular/fire/firestore';
 
 export class MessageRecord {
   id: string;
@@ -15,9 +15,9 @@ export class MessageRecord {
     this.participantID = data.participantID;
     this.participantUsername = data.participantUsername;
     this.message = data.message;
-    this.sent = data.sent?.toDate(); // We convert Timestamp to a date object for javascript.
-    this.delivered = data.delivered?.toDate();
-    this.seen = data.seen?.toDate();
+    this.sent = (data.sent as Timestamp)?.toDate(); // We convert Timestamp to a date object for javascript.
+    // this.delivered = data.delivered?.toDate();
+    // this.seen = data.seen?.toDate();
   }
 
   // We need this function to convert our class to an object that is readable from firestore.
@@ -34,9 +34,10 @@ export class MessageRecord {
       participantID: this.participantID,
       participantUsername: this.participantUsername,
       message: this.message,
-      sent: Timestamp.fromDate(this.sent), // Firestore can't store dates, it can store Timestamps so we convert date to Timestamp.
-      delivered: this.delivered ? Timestamp.fromDate(this.delivered) : null,
-      seen: this.seen ? Timestamp.fromDate(this.seen) : null,
+      // Firestore can't store dates, it can store Timestamps so we convert date to Timestamp.
+      sent: this.sent ? Timestamp.fromDate(this.sent) : serverTimestamp(),
+      // delivered: this.delivered ? Timestamp.fromDate(this.delivered) : null, // TODO: later, not in every toModel();
+      // seen: this.seen ? Timestamp.fromDate(this.seen) : null,
     };
   }
 }

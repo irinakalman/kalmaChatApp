@@ -33,3 +33,7 @@ npm run start:dev
 
 Terminal 2:
 npm run start:emulators
+
+## Acknowledgment section
+
+I would like to thank all my teachers, mentors and SHA for your support and assistance. This project would not have been possible without you. I also thank my classmates for your support and our coding sessions together. Special thank you to my friend Alex K for introducting me to Angular and helping me with back-end! 
